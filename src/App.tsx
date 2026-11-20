@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, Outlet } from "react-router-dom";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { SiteLayout } from "./components/SiteLayout";
@@ -32,6 +32,16 @@ import { IFPPage } from "./pages/IFPPage";
 import { REFPPage } from "./pages/REFPPage";
 import { CFPPage } from "./pages/CFPPage";
 import { BookCallPage } from "./pages/BookCallPage";
+import { OfferLandingPage } from "./pages/OfferLandingPage";
+import { QuizPage } from "./pages/QuizPage";
+import { AdminPage } from "./pages/AdminPage";
+import { LoginPage } from "./pages/LoginPage";
+import { SignupPage } from "./pages/SignupPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { RouteDocumentMeta } from "./components/RouteDocumentMeta";
+import { OFFER_LANDINGS } from "./lib/offers";
 
 import { SocialProofNotifications } from "./components/SocialProofNotifications";
 
@@ -39,6 +49,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="dark" switchable={false}>
+      <RouteDocumentMeta />
       <Routes>
         <Route element={<SiteLayout />}>
           <Route path="/" element={<HomePage />} />
@@ -59,6 +70,7 @@ function App() {
           <Route path="/realestate-u" element={<RealEstateUPage />} />
           <Route path="/wealth-u" element={<WealthUPage />} />
           <Route path="/join" element={<JoinPage />} />
+          <Route path="/offer" element={<JoinPage />} />
           <Route path="/ai-crm" element={<AiCrmPage />} />
           <Route path="/growth-partner" element={<GrowthPartnerPage />} />
           <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
@@ -74,6 +86,23 @@ function App() {
         <Route path="/refp" element={<REFPPage />} />
         <Route path="/cfp" element={<CFPPage />} />
         <Route path="/book" element={<BookCallPage />} />
+        {OFFER_LANDINGS.map(offer => (
+          <Route
+            key={offer.path}
+            path={offer.path}
+            element={<OfferLandingPage offer={offer} />}
+          />
+        ))}
+        <Route path="/quiz" element={<QuizPage />} />
+        <Route element={<div className="min-h-screen flex flex-col bg-background"><Outlet /></div>}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       </ThemeProvider>

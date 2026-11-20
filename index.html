@@ -1,6 +1,52 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Sandbox storage shim. Reading localStorage, sessionStorage, or
+         document.cookie throws SecurityError in a sandboxed iframe without
+         allow-same-origin. Replace those natives before any other script. -->
+    <script>
+      (function () {
+        function memoryStorage() {
+          var m = {};
+          return {
+            getItem: function (k) { return Object.prototype.hasOwnProperty.call(m, String(k)) ? m[String(k)] : null; },
+            setItem: function (k, v) { m[String(k)] = String(v); },
+            removeItem: function (k) { delete m[String(k)]; },
+            clear: function () { m = {}; },
+            key: function (i) { var ks = Object.keys(m); return i < ks.length ? ks[i] : null; },
+            get length() { return Object.keys(m).length; }
+          };
+        }
+        ["localStorage", "sessionStorage"].forEach(function (name) {
+          var usable = false;
+          try {
+            var s = window[name];
+            s.setItem("__probe__", "1");
+            s.removeItem("__probe__");
+            usable = true;
+          } catch (e) { usable = false; }
+          if (!usable) {
+            try {
+              Object.defineProperty(window, name, {
+                value: memoryStorage(), configurable: true, writable: true
+              });
+            } catch (e2) { /* nothing more we can do */ }
+          }
+        });
+        try { void document.cookie; }
+        catch (e) {
+          var jar = "";
+          try {
+            Object.defineProperty(document, "cookie", {
+              get: function () { return jar; },
+              set: function (v) { jar = jar ? jar + "; " + String(v).split(";")[0] : String(v).split(";")[0]; },
+              configurable: true
+            });
+          } catch (e2) { /* nothing more we can do */ }
+        }
+      })();
+    </script>
+
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-3R4FEHSH0F"></script>
     <script>

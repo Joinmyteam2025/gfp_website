@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { SignUp } from "@/components/SignUp";
+import { TestUserLoginSection } from "@/components/TestUserLoginSection";
 import { Button } from "@/components/ui/button";
 
 export function SignupPage() {
@@ -24,6 +25,7 @@ export function SignupPage() {
         </div>
 
         <SignUp />
+        <TestUserLoginSection />
 
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, type FormEvent } from "react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { ScrollReveal } from "../components/ScrollReveal";
+import { trackFunnelLead } from "../lib/metaPixel";
 import {
   ArrowRight,
   Zap,
@@ -194,6 +195,13 @@ export function JoinPage() {
         agentType: formData.agentType || undefined,
         ...utm,
       }).catch(() => {});
+
+      trackFunnelLead(
+        window.location.pathname === "/offer"
+          ? "Garner Financial Partners Agent Offer"
+          : "Join Garner Financial Partners",
+        { freeAccess: true },
+      );
 
       // Redirect after short delay
       setTimeout(() => {

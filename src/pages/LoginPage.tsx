@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { SignIn } from "@/components/SignIn";
+import { TestUserLoginSection } from "@/components/TestUserLoginSection";
 import { Button } from "@/components/ui/button";
 
 export function LoginPage() {
@@ -22,6 +23,7 @@ export function LoginPage() {
         </div>
 
         <SignIn />
+        <TestUserLoginSection />
 
         <p className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}

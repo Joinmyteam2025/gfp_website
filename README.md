@@ -396,7 +396,7 @@ The button signs in as the per-app test user (or creates the account on first cl
 
 ### Test User (for Automated Testing)
 
-Each app has its own auto-generated test user. The credentials are baked into `scripts/testUser.ts`, `convex/seedTestUser.ts`, and `src/components/TestUserLoginSection.tsx` at `init_app_project` time.
+Test-user credentials are not stored in the repo. Set `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` for Convex seeding and Playwright, and `VITE_TEST_USER_EMAIL` / `VITE_TEST_USER_PASSWORD` for the dev-only login button. The button renders only when `import.meta.env.DEV` is true.
 
 `runTest()` for e2e tests automatically logs in as that user:
 

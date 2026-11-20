@@ -22,6 +22,19 @@
           "value": "0"
         }
       ]
+    },
+    {
+      "source": "/GPA-contact.vcf",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/vcard; charset=utf-8"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "inline; filename=\"GPA-contact.vcf\""
+        }
+      ]
     }
   ]
 }

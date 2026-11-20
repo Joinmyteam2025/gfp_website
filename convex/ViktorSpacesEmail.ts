@@ -22,13 +22,15 @@ async function sendEmail({
   heading: string;
   description: string;
 }) {
-  const resendApiKey = process.env.RESEND_API_KEY || "re_c29ftQMj_2egcPJcTayUGzJsRp2rAAcsV";
-  const apiUrl = process.env.VIKTOR_SPACES_API_URL;
-  const projectName = process.env.VIKTOR_SPACES_PROJECT_NAME;
-  const projectSecret = process.env.VIKTOR_SPACES_PROJECT_SECRET;
+  const resendApiKey = process.env.RESEND_API_KEY?.trim();
+  const apiUrl = process.env.VIKTOR_SPACES_API_URL?.trim();
+  const projectName = process.env.VIKTOR_SPACES_PROJECT_NAME?.trim();
+  const projectSecret = process.env.VIKTOR_SPACES_PROJECT_SECRET?.trim();
 
   if (!resendApiKey && (!apiUrl || !projectName || !projectSecret)) {
-    throw new Error("Email not configured. Set RESEND_API_KEY or Viktor Spaces env vars.");
+    throw new Error(
+      "Missing required environment variable: RESEND_API_KEY (or VIKTOR_SPACES_API_URL, VIKTOR_SPACES_PROJECT_NAME, and VIKTOR_SPACES_PROJECT_SECRET)",
+    );
   }
 
   const emailSubject = `${subject} - ${APP_NAME}`;

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { StripeCheckoutModal } from "../components/StripeCheckoutModal";
+import { FunnelOptIn } from "../components/FunnelOptIn";
 import { Footer } from "../components/Footer";
 import {
   Shield,
@@ -1134,6 +1135,13 @@ export function BFPPage() {
       <Footer />
 
       {/* ═══ CHECKOUT MODAL ═══ */}
+      <FunnelOptIn
+        contentName="Business Fortress Program (BFP)"
+        source="bfp"
+        headline="Send me the Business Fortress Program briefing"
+        freeAccess
+        compact
+      />
       <StripeCheckoutModal
         open={showCheckout}
         onClose={() => setShowCheckout(false)}

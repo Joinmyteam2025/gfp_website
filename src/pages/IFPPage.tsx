@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { StripeCheckoutModal } from "../components/StripeCheckoutModal";
+import { FunnelOptIn } from "../components/FunnelOptIn";
 import { Footer } from "../components/Footer";
 import {
   Shield,
@@ -1145,6 +1146,13 @@ export function IFPPage() {
       <Footer />
 
       {/* ═══ CHECKOUT MODAL ═══ */}
+      <FunnelOptIn
+        contentName="Influencer Fortress Program (IFP)"
+        source="ifp"
+        headline="Send me the Influencer Fortress Program briefing"
+        freeAccess
+        compact
+      />
       <StripeCheckoutModal
         open={showCheckout}
         onClose={() => setShowCheckout(false)}

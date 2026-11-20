@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { StripeCheckoutModal } from "../components/StripeCheckoutModal";
+import { FunnelOptIn } from "../components/FunnelOptIn";
 import { Footer } from "../components/Footer";
 import {
   Shield,
@@ -1085,6 +1086,14 @@ export function AFPPage() {
           </p>
         </div>
       </section>
+
+      <FunnelOptIn
+        contentName="Athlete Fortress Program (AFP)"
+        source="afp"
+        headline="Send me the Athlete Fortress Program (AFP) briefing"
+        freeAccess
+        compact
+      />
 
       {/* ═══ STRIPE CHECKOUT MODAL ═══ */}
       <StripeCheckoutModal
