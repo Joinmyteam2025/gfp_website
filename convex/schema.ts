@@ -135,6 +135,20 @@ const schema = defineSchema({
     .index("by_startTimestamp", ["startTimestamp"]),
 
   // ── VSL Page Views (anonymous until identified) ──
+  // Free playbook, bundle, quiz, and fortress briefing opt-ins
+  freeAccessLeads: defineTable({
+    firstName: v.string(),
+    email: v.string(),
+    phone: v.optional(v.string()),
+    smsConsent: v.boolean(),
+    source: v.string(),
+    contentName: v.string(),
+    path: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_email", ["email"])
+    .index("by_source", ["source"]),
+
   vslPageViews: defineTable({
     page: v.string(),             // "afp" | "bfp" etc.
     timestamp: v.number(),

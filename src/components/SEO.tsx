@@ -8,6 +8,8 @@ interface SEOProps {
   ogImage?: string;
   ogType?: string;
   structuredData?: Record<string, unknown>;
+  /** Private routes must not be indexed. */
+  noindex?: boolean;
 }
 
 /**
@@ -22,6 +24,7 @@ export function SEO({
   ogImage = "https://garnerfinancialpartners.com/og-image.png",
   ogType = "website",
   structuredData,
+  noindex = false,
 }: SEOProps) {
   useEffect(() => {
     // Set document title
@@ -40,6 +43,13 @@ export function SEO({
 
     // Standard meta
     setMeta("name", "description", description);
+    setMeta(
+      "name",
+      "robots",
+      noindex
+        ? "noindex, nofollow"
+        : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+    );
     if (keywords.length > 0) {
       setMeta("name", "keywords", keywords.join(", "));
     }
@@ -85,7 +95,7 @@ export function SEO({
       const jsonLd = document.querySelector('script[data-seo-jsonld]');
       if (jsonLd) jsonLd.remove();
     };
-  }, [title, description, keywords, canonicalUrl, ogImage, ogType, structuredData]);
+  }, [title, description, keywords, canonicalUrl, ogImage, ogType, structuredData, noindex]);
 
   return null;
 }

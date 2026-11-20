@@ -1,10 +1,12 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://garnerfinancialpartners.com/sitemap.xml
-
-# Disallow internal/auth pages
-Disallow: /checkout/
-Disallow: /settings
+# Private and auth routes
 Disallow: /dashboard
+Disallow: /settings
+Disallow: /login
+Disallow: /signup
+Disallow: /admin
+Disallow: /checkout/
+
+Sitemap: https://garnerfinancialpartners.com/sitemap.xml

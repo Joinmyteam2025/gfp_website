@@ -1,4 +1,5 @@
 import { httpAction } from "./_generated/server";
+import { requireEnv } from "./requireEnv";
 
 declare const process: { env: Record<string, string | undefined> };
 
@@ -58,15 +59,19 @@ export const vapiWebhook = httpAction(async (_ctx, request) => {
 /**
  * Send SMS via GoHighLevel Conversations API
  */
-const GHL_PIT = process.env.GHL_PIT || "pit-63812b8f-0a9b-4fcf-9659-8a7591f59a54";
-const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID || "X3wPZkYJBsP9at86EkcU";
 const GHL_BASE = "https://services.leadconnectorhq.com";
-const GHL_HEADERS = {
-  Authorization: `Bearer ${GHL_PIT}`,
-  "Content-Type": "application/json",
-  Version: "2021-07-28",
-  "User-Agent": "Viktor/1.0",
-};
+
+function ghlRequest() {
+  return {
+    locationId: requireEnv("GHL_LOCATION_ID"),
+    headers: {
+      Authorization: `Bearer ${requireEnv("GHL_PIT")}`,
+      "Content-Type": "application/json",
+      Version: "2021-07-28",
+      "User-Agent": "Viktor/1.0",
+    },
+  };
+}
 
 async function handleSendTextMessage(args: {
   phoneNumber?: string;
@@ -79,6 +84,7 @@ async function handleSendTextMessage(args: {
   if (!normalizedPhone.startsWith("+")) normalizedPhone = "+1" + normalizedPhone;
 
   const fullMessage = `Garner Financial Partners\n\n${message}`;
+  const ghl = ghlRequest();
 
   try {
     // Step 1: Find or create GHL contact by phone
@@ -86,9 +92,9 @@ async function handleSendTextMessage(args: {
 
     const searchResp = await fetch(`${GHL_BASE}/contacts/search`, {
       method: "POST",
-      headers: GHL_HEADERS,
+      headers: ghl.headers,
       body: JSON.stringify({
-        locationId: GHL_LOCATION_ID,
+        locationId: ghl.locationId,
         filters: [{ field: "phone", operator: "eq", value: normalizedPhone }],
         page: 1,
         pageLimit: 1,
@@ -107,9 +113,9 @@ async function handleSendTextMessage(args: {
       // Create new contact
       const createResp = await fetch(`${GHL_BASE}/contacts/`, {
         method: "POST",
-        headers: GHL_HEADERS,
+        headers: ghl.headers,
         body: JSON.stringify({
-          locationId: GHL_LOCATION_ID,
+          locationId: ghl.locationId,
           phone: normalizedPhone,
           tags: ["vapi-call", "ashley-bot"],
           source: "Ashley AI Voice Bot",
@@ -129,7 +135,7 @@ async function handleSendTextMessage(args: {
     // Step 2: Send SMS via GHL conversations
     const response = await fetch(`${GHL_BASE}/conversations/messages`, {
       method: "POST",
-      headers: GHL_HEADERS,
+      headers: ghl.headers,
       body: JSON.stringify({
         type: "SMS",
         contactId,

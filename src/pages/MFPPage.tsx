@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { StripeCheckoutModal } from "../components/StripeCheckoutModal";
+import { FunnelOptIn } from "../components/FunnelOptIn";
 import { Footer } from "../components/Footer";
 import {
   Shield,
@@ -1068,6 +1069,14 @@ export function MFPPage() {
           </p>
         </div>
       </section>
+
+      <FunnelOptIn
+        contentName="Military Fortress Program (MFP)"
+        source="mfp"
+        headline="Send me the Military Fortress Program briefing"
+        freeAccess
+        compact
+      />
 
       {/* ═══ STRIPE CHECKOUT MODAL ═══ */}
       <StripeCheckoutModal

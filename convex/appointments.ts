@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { action, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { requireEnv } from "./requireEnv";
 
 declare const process: { env: Record<string, string | undefined> };
 
@@ -22,7 +23,12 @@ const BOOKING_BUFFER_MIN = 60;
 const MAX_DAYS_AHEAD = 30;
 
 // ── GHL Notification Config ──
-const GHL_PIT = "pit-63812b8f-0a9b-4fcf-9659-8a7591f59a54";
+function ghlPit() {
+  return requireEnv("GHL_PIT");
+}
+function ghlLocationId() {
+  return requireEnv("GHL_LOCATION_ID");
+}
 const ZACH_GHL_CONTACT = "f6HcrwjJQN0GWf0Il0Ob";
 
 // ── Helpers ──
@@ -91,7 +97,7 @@ async function notifyZach(details: {
     await fetch(`https://services.leadconnectorhq.com/conversations/messages`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${GHL_PIT}`,
+        "Authorization": `Bearer ${ghlPit()}`,
         "Version": "2021-07-28",
         "Content-Type": "application/json",
         "User-Agent": "Viktor/1.0",
@@ -228,13 +234,13 @@ export const bookAppointment = action({
       const searchRes = await fetch("https://services.leadconnectorhq.com/contacts/search", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${GHL_PIT}`,
+          "Authorization": `Bearer ${ghlPit()}`,
           "Version": "2021-07-28",
           "Content-Type": "application/json",
           "User-Agent": "Viktor/1.0",
         },
         body: JSON.stringify({
-          locationId: "X3wPZkYJBsP9at86EkcU",
+          locationId: ghlLocationId(),
           filters: [{ field: "email", operator: "eq", value: clientEmail }],
           page: 1, pageLimit: 1,
         }),
@@ -247,13 +253,13 @@ export const bookAppointment = action({
         const createRes = await fetch("https://services.leadconnectorhq.com/contacts/", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${GHL_PIT}`,
+            "Authorization": `Bearer ${ghlPit()}`,
             "Version": "2021-07-28",
             "Content-Type": "application/json",
             "User-Agent": "Viktor/1.0",
           },
           body: JSON.stringify({
-            locationId: "X3wPZkYJBsP9at86EkcU",
+            locationId: ghlLocationId(),
             firstName: clientName.split(" ")[0],
             lastName: clientName.split(" ").slice(1).join(" ") || "",
             email: clientEmail,
@@ -276,7 +282,7 @@ export const bookAppointment = action({
         await fetch("https://services.leadconnectorhq.com/conversations/messages", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${GHL_PIT}`,
+            "Authorization": `Bearer ${ghlPit()}`,
             "Version": "2021-07-28",
             "Content-Type": "application/json",
             "User-Agent": "Viktor/1.0",
@@ -300,7 +306,7 @@ export const bookAppointment = action({
         await fetch("https://services.leadconnectorhq.com/conversations/messages", {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${GHL_PIT}`,
+            "Authorization": `Bearer ${ghlPit()}`,
             "Version": "2021-07-28",
             "Content-Type": "application/json",
             "User-Agent": "Viktor/1.0",
@@ -315,7 +321,7 @@ export const bookAppointment = action({
         await fetch(`https://services.leadconnectorhq.com/contacts/${ghlContactId}/tags`, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${GHL_PIT}`,
+            "Authorization": `Bearer ${ghlPit()}`,
             "Version": "2021-07-28",
             "Content-Type": "application/json",
             "User-Agent": "Viktor/1.0",

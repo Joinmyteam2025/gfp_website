@@ -16,6 +16,7 @@ import { httpAction } from "./_generated/server";
 import { v } from "convex/values";
 import { mutation, internalAction, query, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { requireEnv } from "./requireEnv";
 
 // ── Valid VSL pages ──
 const VALID_PAGES = ["afp", "bfp", "cfp", "ffp", "ifp", "mfp", "refp"];
@@ -99,13 +100,8 @@ export const tagContactInGHL = internalAction({
   },
   handler: async (ctx, args) => {
     const GHL_API = "https://services.leadconnectorhq.com";
-    const PIT = process.env.GHL_PIT;
-    const LOCATION_ID = process.env.GHL_LOCATION_ID;
-
-    if (!PIT || !LOCATION_ID) {
-      console.error("GHL credentials not configured");
-      return;
-    }
+    const PIT = requireEnv("GHL_PIT");
+    const LOCATION_ID = requireEnv("GHL_LOCATION_ID");
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${PIT}`,

@@ -1,5 +1,6 @@
 import { httpAction } from "./_generated/server";
 import { v } from "convex/values";
+import { requireEnv } from "./requireEnv";
 import { query, internalMutation, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 
@@ -201,25 +202,32 @@ Reply as Ashley in a SHORT text message (under 300 chars). Be helpful and friend
 
 // ── SMS Sending via GoHighLevel ─────────────────────────────────────────────────
 
-const GHL_PIT = process.env.GHL_PIT || "pit-63812b8f-0a9b-4fcf-9659-8a7591f59a54";
-const GHL_LOCATION_ID = process.env.GHL_LOCATION_ID || "X3wPZkYJBsP9at86EkcU";
 const GHL_BASE = "https://services.leadconnectorhq.com";
-const GHL_HEADERS = {
-  Authorization: `Bearer ${GHL_PIT}`,
-  "Content-Type": "application/json",
-  Version: "2021-07-28",
-  "User-Agent": "Viktor/1.0",
-};
+
+function ghlRequest() {
+  return {
+    locationId: requireEnv("GHL_LOCATION_ID"),
+    headers: {
+      Authorization: `Bearer ${requireEnv("GHL_PIT")}`,
+      "Content-Type": "application/json",
+      Version: "2021-07-28",
+      "User-Agent": "Viktor/1.0",
+    },
+  };
+}
 
 /** Find or create a GHL contact by phone number, return contactId */
-async function getOrCreateGhlContact(phone: string): Promise<string | null> {
+async function getOrCreateGhlContact(
+  phone: string,
+  ghl: ReturnType<typeof ghlRequest>,
+): Promise<string | null> {
   try {
     // Search for existing contact
     const searchResp = await fetch(`${GHL_BASE}/contacts/search`, {
       method: "POST",
-      headers: GHL_HEADERS,
+      headers: ghl.headers,
       body: JSON.stringify({
-        locationId: GHL_LOCATION_ID,
+        locationId: ghl.locationId,
         filters: [{ field: "phone", operator: "eq", value: phone }],
         page: 1,
         pageLimit: 1,
@@ -237,9 +245,9 @@ async function getOrCreateGhlContact(phone: string): Promise<string | null> {
     // Contact not found — create one
     const createResp = await fetch(`${GHL_BASE}/contacts/`, {
       method: "POST",
-      headers: GHL_HEADERS,
+      headers: ghl.headers,
       body: JSON.stringify({
-        locationId: GHL_LOCATION_ID,
+        locationId: ghl.locationId,
         phone,
         tags: ["ashley-sms-bot"],
         source: "Ashley AI Bot",
@@ -265,8 +273,9 @@ async function getOrCreateGhlContact(phone: string): Promise<string | null> {
 
 /** Send SMS via GHL Conversations API */
 async function sendSms(to: string, body: string): Promise<boolean> {
+  const ghl = ghlRequest();
   try {
-    const contactId = await getOrCreateGhlContact(to);
+    const contactId = await getOrCreateGhlContact(to, ghl);
     if (!contactId) {
       console.error(`Cannot send SMS: no GHL contact for ${to}`);
       return false;
@@ -274,7 +283,7 @@ async function sendSms(to: string, body: string): Promise<boolean> {
 
     const response = await fetch(`${GHL_BASE}/conversations/messages`, {
       method: "POST",
-      headers: GHL_HEADERS,
+      headers: ghl.headers,
       body: JSON.stringify({
         type: "SMS",
         contactId,
