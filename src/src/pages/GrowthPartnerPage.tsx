@@ -2,6 +2,7 @@ import { useAction } from "convex/react";
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
+import { safeLocalStorage } from "../../lib/safeTokenStorage";
 import { StripeCheckoutModal } from "../components/StripeCheckoutModal";
 import {
   ArrowRight,
@@ -85,9 +86,12 @@ export function GrowthPartnerPage() {
   useEffect(() => {
     const ref = searchParams.get("ref");
     if (ref) {
-      // Store referral code in cookie + localStorage for tracking
-      document.cookie = `affiliate_ref=${ref};path=/;max-age=${60 * 60 * 24 * 90};samesite=lax`;
-      localStorage.setItem("affiliate_ref", ref);
+      try {
+        document.cookie = `affiliate_ref=${ref};path=/;max-age=${60 * 60 * 24 * 90};samesite=lax`;
+      } catch {
+        /* sandboxed document */
+      }
+      safeLocalStorage.setItem("affiliate_ref", ref);
     }
   }, [searchParams]);
 

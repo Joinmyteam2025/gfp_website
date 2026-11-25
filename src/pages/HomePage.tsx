@@ -96,7 +96,7 @@ export function HomePage() {
         title="Garner Financial Partners | Financial Education, Protection & Wealth Building"
         description="Garner Financial Partners provides comprehensive financial education, asset protection strategies, and wealth building tools. Fortress Programs and specialized U portals help you protect what matters most."
         keywords={["financial education company", "wealth building education", "asset protection education", "financial literacy platform", "Garner Financial Partners", "fortress program", "financial education platform", "wealth management education", "financial independence education", "generational wealth education"]}
-        canonicalUrl="https://garnerfinancialpartners.com"
+        canonicalUrl="https://garnerfinancialpartners.com/"
         structuredData={organizationSchema()}
       />
       {/* ═══ HERO ═══ */}

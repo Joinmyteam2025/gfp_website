@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useMutation } from "convex/react";
+import { safeLocalStorage } from "../../lib/safeTokenStorage";
 import { api } from "../../convex/_generated/api";
 import {
   CheckCircle2,
@@ -88,7 +89,7 @@ export function CheckoutSuccessPage() {
     const handleOrder = async () => {
       try {
         // Retrieve pending order from localStorage
-        const pending = localStorage.getItem("pendingOrder");
+        const pending = safeLocalStorage.getItem("pendingOrder");
         if (!pending) {
           setProcessing(false);
           return;
@@ -119,7 +120,7 @@ export function CheckoutSuccessPage() {
         });
 
         // Clean up localStorage
-        localStorage.removeItem("pendingOrder");
+        safeLocalStorage.removeItem("pendingOrder");
         setOrderProcessed(true);
       } catch (error) {
         console.error("Error processing order:", error);

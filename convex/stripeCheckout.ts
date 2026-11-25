@@ -138,11 +138,9 @@ export const createEmbeddedCheckout = action({
     clientSecret: v.string(),
   }),
   handler: async (_ctx, { productKey, customerEmail, metadata, includeSetup }) => {
-    const STRIPE_SK =
-      process.env.STRIPE_SECRET_KEY ||
-      process.env.STRIPE_SECRET_KEY!;
+    const STRIPE_SK = process.env.STRIPE_SECRET_KEY?.trim();
     if (!STRIPE_SK) {
-      throw new Error("Stripe is not configured. Please contact support.");
+      throw new Error("Missing required environment variable: STRIPE_SECRET_KEY");
     }
 
     const product = PRODUCT_PRICES[productKey];

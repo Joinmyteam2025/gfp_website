@@ -2,12 +2,9 @@ import { createAccount, retrieveAccount } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { Scrypt } from "lucia";
 import { internalAction } from "./_generated/server";
+import { requireEnv } from "./requireEnv";
 
-const TEST_USER = {
-  email: "agent-c6b16e64@test.local",
-  password: "qj7JgT365X1a15ZfRFbM3B5Hey2PMiYf",
-  name: "Test Agent",
-} as const;
+declare const process: { env: Record<string, string | undefined> };
 
 export const seedTestUser = internalAction({
   args: {},
@@ -16,10 +13,14 @@ export const seedTestUser = internalAction({
     message: v.string(),
   }),
   handler: async ctx => {
+    const email = requireEnv("TEST_USER_EMAIL");
+    const password = requireEnv("TEST_USER_PASSWORD");
+    const name = process.env.TEST_USER_NAME?.trim() || "Test Agent";
+
     try {
       await retrieveAccount(ctx, {
         provider: "test",
-        account: { id: TEST_USER.email },
+        account: { id: email },
       });
       return { success: true, message: "Test user already exists" };
     } catch {
@@ -27,16 +28,16 @@ export const seedTestUser = internalAction({
     }
 
     try {
-      const hashedPassword = await new Scrypt().hash(TEST_USER.password);
+      const hashedPassword = await new Scrypt().hash(password);
       await createAccount(ctx, {
         provider: "test",
         account: {
-          id: TEST_USER.email,
+          id: email,
           secret: hashedPassword,
         },
         profile: {
-          email: TEST_USER.email,
-          name: TEST_USER.name,
+          email,
+          name,
           emailVerificationTime: Date.now(),
         },
         shouldLinkViaEmail: false,

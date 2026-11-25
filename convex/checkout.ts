@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, internalAction, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { requireEnv } from "./requireEnv";
 
 declare const process: { env: Record<string, string | undefined> };
 
@@ -293,8 +294,8 @@ garnerfinancialpartners.com
         let phone = order.phone.replace(/[^+\d]/g, "");
         if (!phone.startsWith("+")) phone = "+1" + phone;
 
-        const GHL_PIT = process.env.GHL_PIT || "pit-63812b8f-0a9b-4fcf-9659-8a7591f59a54";
-        const GHL_LOCATION = process.env.GHL_LOCATION_ID || "X3wPZkYJBsP9at86EkcU";
+        const GHL_PIT = requireEnv("GHL_PIT");
+        const GHL_LOCATION = requireEnv("GHL_LOCATION_ID");
         const ghlHeaders = {
           Authorization: `Bearer ${GHL_PIT}`,
           "Content-Type": "application/json",
